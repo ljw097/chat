@@ -35,8 +35,16 @@ module.exports = (io) => {
             from:
             to:
         }*/
-        socket.on('join_room', async ({from, to})=> {
-            if (from == null ||to == null) {return;}
+        socket.on('join_room', async ({from, to}, ack)=> {
+            if (typeof ack != 'function') {
+                ack({ ok: false, error: 'ACK_ISNOT_FUNCTION'});
+                return;
+            }
+            
+            if (from == null ||to == null) {
+                ack({ ok: false, error: 'INVALID_PAYLOAD'});
+                return;
+            };
 
             let room = await findRoom(from, to);
             if(!room){
@@ -48,16 +56,32 @@ module.exports = (io) => {
                 }
 
             socket.join(room.id)
-            socket.emit("joined_room", {roomId: room.id})
+            ack({ ok: true, roomId: room.id })
+            //socket.emit("joined_room", {roomId: room.id})
         });
 
-        socket.on('send_message', async (msg) => {
-            socket.to(msg.roomId).emit('receive_message', msg);
-            await db.query(
-                'INSERT INTO chats (roomId, sender, created_at) VALUES (?, ?, NOW())',
-                [msg.roomId, msg.from]);
+        socket.on('send_message', async (msg, ack) => {
+            if (typeof ack !== 'function') {
+                //ack({ ok: false, error: 'ACK_ISNOT_FUNCTION'}); ack 없을시 오류-> 크래시 유발. FE에서 ack 없을시 종료
+                console.error('SEND_MESSAGE called WITHOUT ACK');                
+                return;
+            };
 
-            console.log('send_message: ', msg);
+            try {
+                const [result] = await db.query(
+                    'INSERT INTO chats (room_id, sender, content, created_at) VALUES (?,?,?,NOW())',
+                    [msg.roomId, msg.from, msg.content]
+                );
+                socket.to(msg.roomId).emit('receive_message', {
+                    ...msg,
+                    id: result.insertId
+                });
+                console.log('send_message: ', msg)
+                ack({ ok: true, messageId: result.insertId });
+
+            } catch (e) {
+                ack({ ok: false, error: "INTERNAL_ERROR"});
+            }
         });
 
         socket.on('leave_room', ({roomId}) => {
