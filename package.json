@@ -1,0 +1,41 @@
+{
+  "name": "atpl-academy",
+  "version": "1.0.0",
+  "description": "Comprehensive ATPL study platform with progress tracking",
+  "main": "js/index.js",
+  "scripts": {
+    "start": "node js/index.js",
+    "dev": "nodemon js/index.js",
+    "db:init": "mysql -u root -p < js/atpl_database.sql"
+  },
+  "keywords": [
+    "atpl",
+    "aviation",
+    "study",
+    "learning",
+    "quiz",
+    "exam"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-mysql-session": "^3.0.3",
+    "express-rate-limit": "^7.5.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.1",
+    "fs": "^0.0.1-security",
+    "helmet": "^7.2.0",
+    "http": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.16.3",
+    "net": "^1.0.2",
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
