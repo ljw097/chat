@@ -1,10 +1,11 @@
 mysql = require('mysql2/promise');
+dotenv = require('dotenv');
 
 const db = mysql.createPool({
-    host:'127.0.0.1',
-    user:'dev',
-    password:'devpass',
-    database:'chat',
+    host:process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_TABLE,
     waitForConnections: true,
     connectionLimit: 10,
 });
