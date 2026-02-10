@@ -2,35 +2,42 @@ const { io } = require('socket.io-client')
 
 const socket = io("http://localhost:3000")
 
-
-function sendMessage(socket, room_id, from, content) {
-    const tempId = Date.now();
-    
-    const msg = {
-        room_id, from, content, tempId
-    };
-
-    socket.emit('send_message', msg, (res) => {
+// ===============BE code==============//
+/*
+async function join_room(from, to) {
+    socket.emit('join_room', {from, to}, async (res) => {
         if (res.ok) {
-            //res = { ok: true, messageId: ~, error:~}
-            console.log('send_message: ', res.messageId);
-
-            addMessageToUi({ ...msg, id: res.messageId, status: 'sent'});
-        } else {
-            console.error('send_message: ', res.error);
-            addMessageToUi({ ...msg, status: 'failed', error: res.error });
-        }
+            openRoomUi();
+            let roomId = await res.roomId;
+            console.log('roomId: ', roomId)
+            return roomId;
+        } else{
+            console.error('join_room: ', res.error);
+        };
     });
 };
+*/
+async function join_room(from, to) {
+    return new Promise((resolve, reject) => {
+        socket.emit('join_room', { from, to }, (res) => {
+            if (res.ok) {
+                openRoomUi();
+                resolve(res.roomId); // 여기서 실제 roomId 반환
+            } else {
+                console.error('join_room: ', res.error);
+                reject(res.error);
+            }
+        });
+    });
+}
 
-function joinRoom(from, to) {
-    socket.emit('join_room', msg, (res) => {
+async function send_message(msg) {
+    socket.emit('send_message', msg, (res) => {
         if (res.ok) {
-            console.log('room joined: ', res.roomId);
-            openRoomUi();
-            return res.roomId;
+            addMessageToUi({ ...msg, status:'sent' });
+            console.log('send_message: ', msg);
         } else {
-            console.error('Join_room: ', res.error);
+            addMessageToUi({ ...msg, status:'failed'});
         };
     });
 };
@@ -44,22 +51,29 @@ function openRoomUi() {
     //FE
 };
 
+
 // ===============Socket===============//
-socket.on("connect", () => {
+socket.on("connect", async () => {
     console.log('server connected');
 
     //temp user id for dev
     const from  = '1'; //user's id
-    const to = '2' //oppnent's id
+    const to = '2'; //oppnent's id
 
-    let roomId = joinRoom(from, to);
-    
+    //let roomId = joinRoom(from, to); //joinroom은 처리하지 않아야 함. 
+    let roomId = await join_room(from, to);
+    //방 화면에 접속했다 가정
+    let content = 'hi'
+
     //fake text
-    let context1 = 'hi' //by 'from'
+    msg = {
+        from: `${from}`,
+        content: `${content}`,
+        roomId: `${roomId}`
+    };
 
-    sendMessage(socket, roomId, from, to);
 
-
+    send_message(msg);
 
 });
 

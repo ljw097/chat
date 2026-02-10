@@ -1,14 +1,22 @@
-CREATE TABLE rooms (
-    id VARCHAR(255)
-    user1_id INT
-    user2_id INT
+ALTER TABLE rooms (
+    id VARCHAR(255),
+    user1_id INT,
+    user2_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
-CREATE TABLE user (
+ALTER TABLE user (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
+
+ALTER TABLE chats (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    room_id VARCHAR(255),
+    sender_id INT,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

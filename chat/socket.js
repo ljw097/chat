@@ -27,9 +27,11 @@ async function findRoom(from, to) {
     return rows[0] || null 
 };
 
+const db = require('./db.js')
+
 module.exports = (io) => {
     io.on('connection', (socket) => {
-        console.log('connected' + socket.id);
+        console.log('connected: ' + socket.id);
         /*msg={
             roomId: 
             from:
@@ -37,7 +39,6 @@ module.exports = (io) => {
         }*/
         socket.on('join_room', async ({from, to}, ack)=> {
             if (typeof ack != 'function') {
-                ack({ ok: false, error: 'ACK_ISNOT_FUNCTION'});
                 return;
             }
             
@@ -55,8 +56,9 @@ module.exports = (io) => {
                 }
                 }
 
-            socket.join(room.id)
-            ack({ ok: true, roomId: room.id })
+            socket.join(room.id);
+            console.log(socket.id, ' joined room: ', room.id);
+            ack({ ok: true, roomId: room.id });
             //socket.emit("joined_room", {roomId: room.id})
         });
 
@@ -69,13 +71,15 @@ module.exports = (io) => {
 
             try {
                 const [result] = await db.query(
-                    'INSERT INTO chats (room_id, sender, content, created_at) VALUES (?,?,?,NOW())',
+                    'INSERT INTO chats (room_id, sender_id, content, created_at) VALUES (?,?,?,NOW())',
                     [msg.roomId, msg.from, msg.content]
                 );
                 socket.to(msg.roomId).emit('receive_message', {
                     ...msg,
                     id: result.insertId
                 });
+
+                console.log(result)
                 console.log('send_message: ', msg)
                 ack({ ok: true, messageId: result.insertId });
 
