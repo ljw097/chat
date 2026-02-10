@@ -81,6 +81,7 @@ module.exports = (io) => {
 
             } catch (e) {
                 ack({ ok: false, error: "INTERNAL_ERROR"});
+                console.log(e);
             }
         });
 
