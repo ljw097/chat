@@ -1,19 +1,19 @@
-ALTER TABLE rooms (
+CREATE TABLE rooms (
     id VARCHAR(255),
     user1_id INT,
     user2_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE user (
+CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    uid VARCHAR(50) UNIQUE NOT NULL,
+    upw VARCHAR(255) NOT NULL,
     phone VARCHAR(20) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-ALTER TABLE chats (
+CREATE TABLE chats (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     room_id VARCHAR(255),
     sender_id INT,
