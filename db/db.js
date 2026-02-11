@@ -1,5 +1,5 @@
 mysql = require('mysql2/promise');
-dotenv = require('dotenv');
+dotenv = require('dotenv').config({path: './.env'});
 
 const db = mysql.createPool({
     host:process.env.DB_HOST,
@@ -19,5 +19,3 @@ async function testDB() {
     );
     console.log('DB TEST: ', rows);
 };
-
-//testDB()

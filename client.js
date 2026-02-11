@@ -62,6 +62,7 @@ socket.on("connect", async () => {
 
     //let roomId = joinRoom(from, to); //joinroom은 처리하지 않아야 함. 
     let roomId = await join_room(from, to);
+    console.log('Joined room: ', roomId);
     //방 화면에 접속했다 가정
     let content = 'hi'
 

@@ -27,7 +27,7 @@ async function findRoom(from, to) {
     return rows[0] || null 
 };
 
-const db = require('./db.js')
+const db = require('../db/db');
 
 module.exports = (io) => {
     io.on('connection', (socket) => {
