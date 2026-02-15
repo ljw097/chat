@@ -8,7 +8,7 @@ const validator = require('validator');
 router.post('/signup', async (req, res) => {
     const { uid, upw, upw_c, email, phone } = req.body;
 
-    console.log('signup: ', req.body);
+    //console.log('signup: ', req.body);
 
     if (!validator.isLength(uid, { min: 3, max: 20 })) {
         return res.status(400).json({ ok:false, error: 'UID_LENGTH' });
@@ -76,7 +76,7 @@ router.post('/signup', async (req, res) => {
                 }
             };
         };
-        console.log(err);
+        //console.log(err);
         return res.status(500).json({ ok: false, error: 'INTERNAL_SERVER_ERROR'});
     };    
 });    
