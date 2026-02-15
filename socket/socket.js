@@ -41,7 +41,8 @@ module.exports = (io) => {
 
         try {
             const decoded = jwt.verify(token);
-            socket.userId = decoded.userId;
+            console.log(decoded);
+            socket.id = decoded.userId;
             console.log("Passing jwt middleware");
             next();
         } catch(err) {
