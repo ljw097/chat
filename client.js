@@ -1,6 +1,19 @@
 const { io } = require('socket.io-client')
 
-const socket = io("http://localhost:3000")
+
+
+function login() {
+    //login logic
+    //after login, get token and save to localStorage
+    //localStorage.setItem\
+    const socket = io("http://localhost:3000", {
+        auth :{ 
+            //token: localStorage.getItem('token') //in production
+            token: `${severToken}`
+        }
+    });
+};
+
 
 // ===============BE code==============//
 /*
@@ -52,6 +65,8 @@ function openRoomUi() {
 };
 
 
+
+login();
 // ===============Socket===============//
 socket.on("connect", async () => {
     console.log('server connected');

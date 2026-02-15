@@ -28,8 +28,28 @@ async function findRoom(from, to) {
 };
 
 const db = require('../db/db');
+const jwt = require('../utils/jwt');
 
 module.exports = (io) => {
+    io.use((socket, next) => {
+        const token = socket.handshake.auth.token; 
+
+        if (!token) {
+            console.error("NO_TOKEN");
+            return next(new Error("NO_TOKEN"));
+        };
+
+        try {
+            const decoded = jwt.verify(token);
+            socket.userId = decoded.userId;
+            console.log("Passing jwt middleware");
+            next();
+        } catch(err) {
+            console.log("INVALID_TOKEN, ", decoded);
+            next(new Error("INVALID_TOKEN"));
+        };
+    });
+
     io.on('connection', (socket) => {
         console.log('connected: ' + socket.id);
         /*msg={
@@ -97,4 +117,4 @@ module.exports = (io) => {
             console.log('disconnected: ', socket.id);
         })
     });
-}
+};
