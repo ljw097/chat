@@ -1,7 +1,14 @@
 const { io } = require('socket.io-client');
 const axios = require('axios');
+const socket = io('http://localhost:3000', {
+    autoConnect: false
+});
 
 
+async function connect(token) {
+    socket.auth = { token } ;
+    socket.connect();
+};
 
 async function signup(uid, upw, upw_c, email, phone) {
     try {
@@ -73,4 +80,4 @@ async function send_message(msg) {
 };
 
 
-module.exports = {signup, login, join_room, send_message};
+module.exports = {signup, connect, login, join_room, send_message};
