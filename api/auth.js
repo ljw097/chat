@@ -42,30 +42,40 @@ router.post('/signup', async (req, res) => {
     return res.status(400).json({ ok:false, error: 'PW_NO_SPECIAL_CHAR' });
     };
 
+    if (upw != upw_c) {
+    return res.status(400).json({ ok:false, error: 'PW_CHECK_ERR'});
+    };
+
     const hashed = await bcrypt.hash(upw, 11);
     console.log('upw: ', upw, 'hashed: ', hashed);
 
-
     try {
-        const [rows] = await db.query(
-            `SELECT id FROM users WHERE uid = (?)`, [uid]
+        await db.query(
+            `INSERT INTO users (uid, upw, email, phone) VALUES (?,?,?,?)`,
+            [uid, hashed, email, phone]
         );
-
-            if (rows.length > 0) {
-                return res.status(400).json({ ok:false, error: 'ID_ALREADY_EXISTS'});
-            } else {
-                try {
-                    await db.query(
-                        `INSERT INTO users (uid, upw, email, phone) VALUES (?,?,?,?)`,
-                        [uid, hashed, email, phone]
-                    );
-                    return res.status(201).json({ ok: true });
-                } catch (err) {
-                    console.log(err);
-                    return res.status(500).json({ ok: false, error: 'INTERNAL_SERVER_ERROR' });
-                };
-            };
+        return res.status(201).json({ ok: true });
     } catch (err) {
+        console.log(err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            const match = err.sqlMessage.match(/for key '(.+)'/);
+
+            if (match) {
+                const key = match[1];
+
+                if (key.includes('uid')) {
+                    return res.status(400).json({ ok:false, error:'UID_ALREADY_EXISTS' });
+                }
+
+                if (key.includes('email')) {
+                    return res.status(400).json({ ok:false, error:'EMAIL_ALREADY_EXISTS' });
+                }
+
+                if (key.includes('phone')) {
+                    return res.status(400).json({ ok:false, error:'PHONE_ALREADY_EXISTS' });
+                }
+            };
+        };
         console.log(err);
         return res.status(500).json({ ok: false, error: 'INTERNAL_SERVER_ERROR'});
     };    
@@ -81,14 +91,14 @@ router.post('/login', async (req, res) => {
 
     try {
         const [rows] = await db.query(
-            `SELECT uid,upw FROM users WHERE uid = (?)`, [uid]
+            `SELECT id, uid,upw FROM users WHERE uid = (?)`, [uid]
         );
         if (rows.length === 0 ) {
             return res.status(400).json({ ok:false, error:'LOGIN_FAIL' });
         } else {
             const hashed = rows[0].upw;
             if (await bcrypt.compare(upw, hashed)) {
-                const token = jwt.sign({ userId: rows[0].uid });
+                const token = jwt.sign({ userId: rows[0].id });
                 return res.json({ ok: true, token });
             } else {
                 return res.status(400).json({ ok:false, error:'LOGIN_FAIL' });

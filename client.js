@@ -13,7 +13,7 @@ async function signup(uid, upw, upw_c, email, phone) {
             email: `${email}`,
             phone: `${phone}`
         });
-        console.log(res);
+        console.log(res.data.ok);
     } catch (err) {
         console.log(err.response.data.ok);
         console.log(err.response.data.error)
@@ -74,7 +74,7 @@ function openRoomUi() {
 const uid = 'test';
 const upw = 'testtest123!@';
 const upw_c = 'testtest123!@';
-const email = 'njbsandrewlee@gmail.com';
+const email = 'test@test.com';
 const phone = '01072684290';
 signup(uid, upw, upw_c, email, phone);
 // ===============Socket===============//
