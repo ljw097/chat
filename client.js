@@ -1,17 +1,23 @@
-const { io } = require('socket.io-client')
+const { io } = require('socket.io-client');
+const axios = require('axios');
 
 
 
-function login() {
-    //login logic
-    //after login, get token and save to localStorage
-    //localStorage.setItem\
-    const socket = io("http://localhost:3000", {
-        auth :{ 
-            //token: localStorage.getItem('token') //in production
-            token: `${severToken}`
-        }
-    });
+async function signup(uid, upw, upw_c, email, phone) {
+
+    try {
+        const res = await axios.post('http://localhost:3000/auth/signup', {
+            uid: `${uid}`,
+            upw: `${upw}`,
+            upw_c: `${upw_c}`,
+            email: `${email}`,
+            phone: `${phone}`
+        });
+        console.log(res);
+    } catch (err) {
+        console.log(err.response.data.ok);
+        console.log(err.response.data.error)
+    };
 };
 
 
@@ -65,9 +71,14 @@ function openRoomUi() {
 };
 
 
-
-login();
+const uid = 'test';
+const upw = 'testtest123!@';
+const upw_c = 'testtest123!@';
+const email = 'njbsandrewlee@gmail.com';
+const phone = '01072684290';
+signup(uid, upw, upw_c, email, phone);
 // ===============Socket===============//
+/*
 socket.on("connect", async () => {
     console.log('server connected');
 
@@ -93,3 +104,4 @@ socket.on("connect", async () => {
 
 });
 
+*/

@@ -61,10 +61,12 @@ router.post('/signup', async (req, res) => {
                     );
                     return res.status(201).json({ ok: true });
                 } catch (err) {
+                    console.log(err);
                     return res.status(500).json({ ok: false, error: 'INTERNAL_SERVER_ERROR' });
                 };
             };
     } catch (err) {
+        console.log(err);
         return res.status(500).json({ ok: false, error: 'INTERNAL_SERVER_ERROR'});
     };    
 });    
