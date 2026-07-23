@@ -30,12 +30,15 @@ const phone = '01072684290';
     }
 
     await connect(resp.token);
-
+    try {
     const friend = await get_friend('uid', 'test2'); //if friend not exist?
-    console.log('friend: ', friend)
+    console.log('friend: ', friend.id)
 
     const roomId = await join_room(friend.id);
-    console.log('module' , roomId);
+    console.log('module' , roomId);//?
+    } catch (err) {
+        console.log(err);
+    }
     //const sent = await send_message({ 
     //    roomId: `${roomId}`, 
     //    content: 'test'
@@ -43,6 +46,3 @@ const phone = '01072684290';
     //console.log(sent);
     //leave_room(roomId);
 })();
-
-//test test
-//test
