@@ -47,7 +47,7 @@ router.post('/signup', async (req, res) => {
     };
 
     const hashed = await bcrypt.hash(upw, 11);
-    console.log('upw: ', upw, 'hashed: ', hashed);
+    //console.log('upw: ', upw, 'hashed: ', hashed);
 
     try {
         await db.query(
@@ -56,7 +56,6 @@ router.post('/signup', async (req, res) => {
         );
         return res.status(201).json({ ok: true });
     } catch (err) {
-        console.log(err);
         if (err.code === 'ER_DUP_ENTRY') {
             const match = err.sqlMessage.match(/for key '(.+)'/);
             console.log(match);
@@ -93,7 +92,7 @@ router.post('/login', async (req, res) => {
     };
 
     try {
-        console.log('pass');
+        //console.log('pass');
         const [rows] = await db.query(
             `SELECT id, uid,upw FROM users WHERE uid = (?)`, [uid]
         );

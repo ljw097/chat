@@ -68,19 +68,22 @@ module.exports = (io) => {
                 ack({ ok: false, error: 'INVALID_PAYLOAD'});
                 return;
             };
-
+            console.log("pass, from: ", from, " to: ", to);
             let room = await findRoom(from, to);
+            console.log(!room);
             if(!room){
                 try {
                     room = await createRoomId(from, to);
+                    console.log(room);
                 } catch(e) {
                     room = await findRoom(from, to);
                 }
-                }
+            }
 
-            socket.join(room.id);
-            console.log(socket.id, ' joined room: ', room.id);
-            ack({ ok: true, roomId: room.id });
+
+            socket.join(room);
+            console.log(socket.id, ' joined room: ', room);
+            ack({ ok: true, roomId: room });
             //socket.emit("joined_room", {roomId: room.id})
         });
 

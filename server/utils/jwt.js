@@ -2,7 +2,6 @@
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.jwt_secret;
 
-console.log(SECRET);
 function sign(payload) {
   return jwt.sign(payload, SECRET, {expiresIn: '24h'});
 }
