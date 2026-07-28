@@ -31,18 +31,20 @@ const phone = '01072684290';
 
     await connect(resp.token);
     try {
-    const friend = await get_friend('uid', 'test2'); //if friend not exist?
-    console.log('friend: ', friend.id)
+        const friend = await get_friend('uid', 'test2'); //if friend not exist?
+        console.log('friend: ', friend.id)
 
-    const roomId = await join_room(friend.id);
-    console.log('module' , roomId);//?
+        const room = await join_room(friend.id);
+         console.log(room);
+        const sent = await send_message({ 
+            roomId: room, 
+            content: 'test'
+        });
+        console.log(sent);
+        leave_room(room);
     } catch (err) {
         console.log(err);
     }
-    //const sent = await send_message({ 
-    //    roomId: `${roomId}`, 
-    //    content: 'test'
-    //});
-    //console.log(sent);
-    //leave_room(roomId);
+
+   
 })();
